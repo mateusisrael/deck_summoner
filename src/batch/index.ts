@@ -1,16 +1,14 @@
 import fs from 'fs/promises';
-import path from 'path';
+import path, { resolve } from 'path';
 import mongoose from 'mongoose';
 import ChampModel from './model';
+import { rejects } from 'assert';
 
 interface ChampsJson {
   type: string,
   format: string,
   version: string,
   data: any
-}
-
-interface Champ {
 }
 
 
@@ -55,31 +53,37 @@ interface Champ {
 
   // })
   .then(async () => {
-    let batchs: number;
-    let erros: number;
+    let batchs = 0;
+    let errors = 0;
 
     for(let i = 0; i< 2; i++) {
       const champ = champs[champsKeys[i]];
-      insert(champ, (status) => {
-        if(status === 'saved') {
-          console.log("SUCCESS")
-          batchs = batchs+1;
-        } else if(status === 'error') {
-          console.log("ERROR")
-          erros = erros+1;
+      await insert(champ, (status) => {
+        switch(status) {
+          case 'saved':
+            console.log('savedddddddd')
+            return batchs++;
+
+
+          case 'error':
+            console.log('errrrroooooorrrr')
+            return errors++;
+
         }
-        console.log(status)
-      });
+      })
     }
 
-    console.log(`Finalized with ${batchs} champions saveds and ${erros} erros!`);
-  })
+    return console.log(batchs, errors)
 
+  })
+  // .then((status) => {
+  //   console.log(`Batchs finalized with ${status.batchs} champions saveds and ${status.errors} erros!`);
+  // })
   .catch(err => {throw new Error("Error connecting to the data base")});
 
 })()
 
-const insert = (champ, callback) => {
+const insert = async (champ, callback: CallableFunction) => {
   const newChampion = new ChampModel({
     version: champ.version,
     id: champ.id,
