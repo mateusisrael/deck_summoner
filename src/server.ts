@@ -1,15 +1,17 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import Controllers from './Controllers';
+import bodyParser from 'body-parser'
 
 class Server{
   public express: express.Application;
   public controllers: Controllers
-
   public constructor() {
     this.express = express();
     this.controllers = new Controllers();
     this.routes();
   }
+
+
 
   private routes = async () => {
     this.express.get('/', async(req: express.Request, res: express.Response) => {
@@ -26,6 +28,10 @@ class Server{
     this.express.get('/version', (req: express.Request, res: express.Response) => {
       res.send("v0.0.1");
     })
+
+    this.express.post('/register', bodyParser.json(), async (req: express.Request, res: express.Response) => {
+      res.send(await this.controllers.registerUser(req.body));
+    });
   }
 
 }

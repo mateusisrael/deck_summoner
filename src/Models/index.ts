@@ -14,6 +14,20 @@ const ChampScheema = new mongoose.Schema({
   stats: Object
 });
 
-const ChampModel = mongoose.model('champions', ChampScheema)
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  }
+});
 
-export default ChampModel;
+export const UserModel = mongoose.model('Users', UserSchema);
+export const ChampModel = mongoose.model('champions', ChampScheema);
