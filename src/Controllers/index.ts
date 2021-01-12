@@ -4,6 +4,7 @@ import {
   NextFunction,
 } from 'express';
 import { ChampModel, UserModel } from '../Models'
+import * as jsonWebToken from 'jsonwebtoken'
 
 interface UserData{
   name: String,
@@ -55,21 +56,37 @@ class Controllers{
   }
 
   public async login(user: UserData) {
-    const userName = user.name;
     const userEmail = user.email;
     const userPassword = user.password;
 
     try{
       let alreadyUser = await UserModel.find({ email: userEmail });
       const emailExist = alreadyUser.length > 0 ? true : false;
-
       if(!emailExist) return {"message": "no user founds"}
       if(alreadyUser[0].password != userPassword) return {"message": "invalid password"}
+
+
+      const secret = process.env.TOKEN_SECRET;
+      const id = alreadyUser[0]._id; 
+      const token = jsonWebToken.sign({id}, secret, {
+        expiresIn: 300
+      })
       
-      return {"message": "loged"}
+      return {"logged": true, "message": "logged", "token": token}
 
     } catch {
       return {"erro": "erro interno"}
+    }
+  }
+
+  public async checkToken(token: string) {
+    if(!token) return {"message": "invalid token"}
+    const secret = process.env.TOKEN_SECRET;
+    try {
+      jsonWebToken.verify(token, secret);
+      return {"message": "valide token"}
+    } catch{
+      return { "message": "invalide token" }
     }
   }
 }

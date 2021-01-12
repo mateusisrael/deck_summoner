@@ -36,6 +36,11 @@ class Server{
     this.express.post('/login', bodyParser.json(), async (req: express.Request, res: express.Response) => {
       res.send(await this.controllers.login(req.body));
     })
+
+    this.express.post('/check', bodyParser.json(), async (req: express.Request, res: express.Response) => {
+      console.log(req.headers['x-acess-token']);
+      res.send(await this.controllers.checkToken(req.headers['x-acess-token'].toString()));
+    })
   }
 
 }
