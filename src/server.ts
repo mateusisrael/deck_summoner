@@ -14,7 +14,7 @@ class Server{
 
 
   private routes = async () => {
-    this.express.get('/', async(req: express.Request, res: express.Response) => {
+    this.express.get('/champions', async(req: express.Request, res: express.Response) => {
       try {
         const data = await this.controllers.getData();
         res.send(data);
@@ -32,6 +32,10 @@ class Server{
     this.express.post('/register', bodyParser.json(), async (req: express.Request, res: express.Response) => {
       res.send(await this.controllers.registerUser(req.body));
     });
+
+    this.express.post('/login', bodyParser.json(), async (req: express.Request, res: express.Response) => {
+      res.send(await this.controllers.login(req.body));
+    })
   }
 
 }

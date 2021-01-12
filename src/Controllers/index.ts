@@ -24,7 +24,7 @@ class Controllers{
     }
   }
 
-  public registerUser = async(user: UserData) => {
+  public registerUser = async(user: UserData): Promise<Object> => {
     const userName = user.name;
     const userEmail = user.email;
     const userPassword = user.password
@@ -50,6 +50,25 @@ class Controllers{
       }
 
     }catch{
+      return {"erro": "erro interno"}
+    }
+  }
+
+  public async login(user: UserData) {
+    const userName = user.name;
+    const userEmail = user.email;
+    const userPassword = user.password;
+
+    try{
+      let alreadyUser = await UserModel.find({ email: userEmail });
+      const emailExist = alreadyUser.length > 0 ? true : false;
+
+      if(!emailExist) return {"message": "no user founds"}
+      if(alreadyUser[0].password != userPassword) return {"message": "invalid password"}
+      
+      return {"message": "loged"}
+
+    } catch {
       return {"erro": "erro interno"}
     }
   }
