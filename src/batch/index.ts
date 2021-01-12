@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path, { resolve } from 'path';
 import mongoose from 'mongoose';
-import ChampModel from './model';
+import ChampModel from '../Models';
 import { rejects } from 'assert';
 
 interface ChampsJson {
