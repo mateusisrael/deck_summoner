@@ -1,6 +1,7 @@
 import express, { NextFunction } from 'express';
 import Controllers from './Controllers';
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 class Server{
   public express: express.Application;
@@ -8,6 +9,7 @@ class Server{
   public constructor() {
     this.express = express();
     this.controllers = new Controllers();
+    this.express.use(cors());
     this.routes();
   }
 
